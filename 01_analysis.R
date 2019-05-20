@@ -52,8 +52,9 @@ prezcounties_wide <- prezcounties_wide %>%
 three_cycles_across <- prezcounties_wide %>% 
   select(year, county, state_po, fips, winner) %>%
   spread(year, winner) %>% 
-  clean_names() #to take care of column names that are all numbers (adds a preceding 'x')
-
+  clean_names() %>% #to take care of column names that are all numbers (adds a preceding 'x')
+  arrange(state_po, county) #sort by state, then within each state by county 
+  
 #let's see what this looks like
 three_cycles_across
 
