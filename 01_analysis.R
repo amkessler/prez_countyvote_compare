@@ -69,12 +69,22 @@ three_cycles_across %>%
   )
 
 #save the result with a new name
-finalresults <- three_cycles_across %>% 
+final_twoobama_trump <- three_cycles_across %>% 
   filter(
     x2008 == "D", #Obama wins
     x2012 == "D", #Obama wins
     x2016 == "R"  #Trump wins
   )
 
-#export finalresults to a file
-write_csv(finalresults, "finalresults.csv")
+#export to a file
+write_csv(final_twoobama_trump, "final_twoobama_trump.csv")
+
+#now we'll do a similar one, but this time if Obama won EITHER in 2008 or 2012
+final_oneobama_trump <- three_cycles_across %>% 
+  filter(
+    (x2008 == "D" | x2012 == "D"), #Obama in either 2008 or 2012 - the "|" means "or"
+    x2016 == "R"  #Trump wins
+  )
+
+#export to a file
+write_csv(final_oneobama_trump, "final_oneobama_trump.csv")
