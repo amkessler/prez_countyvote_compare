@@ -83,8 +83,7 @@ margins_across <- margins_across %>%
   filter(!is.na(x2012_margin))
 
 
-#now let's find counties that were slim gop victories in 2012
-#but large for Trump in 2016
+#now let's find counties with slim gop victories in 2012 but huge for Trump in 2016 ####
 final_bigiowajumps <- margins_across %>% 
   filter(x2012_margin <=10,
          x2016_margin >=25) %>% 
