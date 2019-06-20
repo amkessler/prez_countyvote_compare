@@ -60,22 +60,16 @@ prezcounties_wide <- prezcounties_wide %>%
 
 
 
+#### NOW THE ANALYSIS OF JUST REPUBLICAN GOOD VS. GREAT ####
+
+#filter on only R winners
+gopwinners <- prezcounties_wide %>% 
+  filter(winner == "R")
 
   
-
 #reshape again, this time to put both 2012 and 2016 cycles going across ####
-#with the party winners listed
-three_cycles_across <- prezcounties_wide %>% 
-  select(year, county, state_po, fips, winner) %>%
-  spread(year, winner) %>% 
-  clean_names() %>% #to take care of column names that are all numbers (adds a preceding 'x')
-  arrange(state_po, county) #sort by state, then within each state by county 
-  
-#let's see what this looks like
-head(three_cycles_across, 3)
-
-#now we'll do something similar but this time for the margin victories for each cycle
-margins_across <- prezcounties_wide %>% 
+#margin victories for each cycle
+margins_across <- gopwinners %>% 
   select(year, county, state_po, fips, margin) %>%
   spread(year, margin) %>% 
   clean_names() %>% #to take care of column names that are all numbers (adds a preceding 'x')
@@ -84,38 +78,20 @@ margins_across <- prezcounties_wide %>%
 
 head(margins_across, 3)
 
-#join to two tables together
-final <- inner_join(three_cycles_across, margins_across)
+#filter out NAs from 2012 where republican did not win
+margins_across <- margins_across %>% 
+  filter(!is.na(x2012_margin))
 
 
-#now that we have these results formatted, it's just a matter of
-#filtering based on the winner of each election
+#now let's find counties that were slim gop victories in 2012
+#but large for Trump in 2016
+final_bigiowajumps <- margins_across %>% 
+  filter(x2012_margin <=10,
+         x2016_margin >=25) %>% 
+  arrange(x2012_margin)
 
-#find counties with two obama wins and then a trump win
-final %>% 
-  filter(
-    x2008 == "D", #Obama wins
-    x2012 == "D", #Obama wins
-    x2016 == "R"  #Trump wins
-  )
 
-#save the result with a new name
-final_twoobama_trump <- final %>% 
-  filter(
-    x2008 == "D", #Obama wins
-    x2012 == "D", #Obama wins
-    x2016 == "R"  #Trump wins
-  )
+final_bigiowajumps
 
 #export to a file
-write_csv(final_twoobama_trump, "final_twoobama_trump.csv")
-
-#now we'll do a similar one, but this time if Obama won EITHER in 2008 or 2012
-final_oneobama_trump <- final %>% 
-  filter(
-    (x2008 == "D" | x2012 == "D"), #Obama in either 2008 or 2012 - the "|" means "or"
-    x2016 == "R"  #Trump wins
-    )
-
-#export to a file
-write_csv(final_oneobama_trump, "final_oneobama_trump.csv")
+write_csv(final_bigjumps, "final_bigiowajumps.csv")
