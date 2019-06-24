@@ -85,8 +85,8 @@ margins_across <- margins_across %>%
 
 #now let's find counties with slim gop victories in 2012 but huge for Trump in 2016 ####
 final_bigiowajumps <- margins_across %>% 
-  filter(x2012_margin < 10, #single digit win
-         x2016_margin >=25) %>% 
+  filter(x2012_margin <= 12, #single digit win
+         x2016_margin >=24) %>% 
   arrange(x2012_margin)
 
 #rename margin columns for clarity
