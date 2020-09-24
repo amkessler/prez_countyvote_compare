@@ -80,6 +80,8 @@ margins_across
 #join to two tables together
 final <- inner_join(three_cycles_across, margins_across)
 
+#export
+write_csv(final, "counties_prezwinners_ak.csv")
 
 #now that we have these results formatted, it's just a matter of
 #filtering based on the winner of each election
