@@ -1,6 +1,7 @@
 library(tidyverse)
 library(janitor)
 library(lubridate)
+library(writexl)
 
 rawdata <- read_csv("countypres_2000-2016.csv", 
                         col_types = cols(FIPS = col_character(), 
@@ -80,8 +81,15 @@ margins_across
 #join to two tables together
 final <- inner_join(three_cycles_across, margins_across)
 
+#deal with leading zeros that might be missing from FIPS codes
+final <- final %>% 
+  mutate(
+    fips = if_else(str_length(fips) == 4, paste0("0", fips), fips)
+  )
+
 #export
 write_csv(final, "counties_prezwinners_ak.csv")
+write_xlsx(final, "counties_prezwinners_ak.xlsx")
 
 #now that we have these results formatted, it's just a matter of
 #filtering based on the winner of each election
